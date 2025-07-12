@@ -1,0 +1,102 @@
+{
+  "tiles": {
+    "ceramic": {
+      "name": "Ceramic Tiles",
+      "unit": "m²",
+      "price_per_unit": {
+        "budget": 20,
+        "standard": 40,
+        "premium": 70
+      },
+      "supplier": "Local Building Supplies"
+    },
+    "porcelain": {
+      "name": "Porcelain Tiles",
+      "unit": "m²",
+      "price_per_unit": {
+        "budget": 30,
+        "standard": 55,
+        "premium": 90
+      },
+      "supplier": "Premium Tilers Inc."
+    }
+  },
+  "plumbing": {
+    "shower_kit": {
+      "name": "Complete Shower Kit",
+      "unit": "piece",
+      "price_per_unit": {
+        "budget": 250,
+        "standard": 500,
+        "premium": 1200
+      },
+      "supplier": "PlumbCo"
+    },
+    "pipes": {
+      "name": "Copper Pipes",
+      "unit": "meter",
+      "price_per_unit": {
+        "standard": 25
+      },
+      "supplier": "PlumbCo"
+    }
+  },
+  "sanitary": {
+    "toilet": {
+      "name": "Wall-Hung Toilet",
+      "unit": "piece",
+      "price_per_unit": {
+        "budget": 150,
+        "standard": 300,
+        "premium": 600
+      },
+      "supplier": "Sanitary Solutions"
+    },
+    "vanity": {
+      "name": "Single Vanity Unit",
+      "unit": "piece",
+      "price_per_unit": {
+        "budget": 200,
+        "standard": 450,
+        "premium": 900
+      },
+      "supplier": "Bathroom Luxuries"
+    }
+  },
+  "finishes": {
+    "paint": {
+      "name": "Moisture-Resistant Paint",
+      "unit": "liter",
+      "price_per_unit": {
+        "standard": 15
+      },
+      "supplier": "PaintPerfect"
+    },
+    "grout": {
+      "name": "Standard Grout",
+      "unit": "kg",
+      "price_per_unit": {
+        "standard": 5
+      },
+      "supplier": "Local Building Supplies"
+    },
+    "silicone": {
+      "name": "Sanitary Silicone",
+      "unit": "tube",
+      "price_per_unit": {
+        "standard": 8
+      },
+      "supplier": "Local Building Supplies"
+    }
+  },
+  "demolition": {
+      "waste_disposal": {
+          "name": "Waste Disposal Bag",
+          "unit": "bag",
+          "price_per_unit": {
+              "standard": 50
+          },
+          "supplier": "local Building Supplies"
+      }
+  }
+} 
