@@ -1,73 +1,59 @@
-# pricing_logic/labor_calc.py
+import pandas as pd
+from pathlib import Path
 
-# This database defines the estimated time for various tasks.
-# Time is in hours. 'base_time' is a fixed time, while 'time_per_sqm' is per square meter.
-TASK_LABOR_DB = {
-    "demolition": {
-        "remove_tiles": {"base_time": 4, "time_per_sqm": 1.5, "skill_level": "medium"},
-        "remove_toilet": {"base_time": 1, "time_per_sqm": 0, "skill_level": "low"},
-        "remove_vanity": {"base_time": 1, "time_per_sqm": 0, "skill_level": "low"},
-    },
-    "plumbing": {
-        "redo_shower_plumbing": {"base_time": 8, "time_per_sqm": 0, "skill_level": "high"},
-        "install_toilet": {"base_time": 3, "time_per_sqm": 0, "skill_level": "medium"},
-    },
-    "installation": {
-        "lay_floor_tiles": {"base_time": 4, "time_per_sqm": 2, "skill_level": "high"},
-        "install_vanity": {"base_time": 3, "time_per_sqm": 0, "skill_level": "medium"},
-    },
-    "finishing": {
-        "repaint_walls": {"base_time": 2, "time_per_sqm": 1, "skill_level": "low"},
-    }
-}
+# --- Data Loading ---
 
-# Hourly rates based on skill level
+def load_task_db():
+    """Loads the task database from the CSV file."""
+    db_path = Path(__file__).parent.parent / 'data' / 'price_templates.csv'
+    if not db_path.exists():
+        raise FileNotFoundError(f"Price templates file not found at {db_path}")
+    
+    # Use task_id as the index for quick lookups
+    df = pd.read_csv(db_path)
+    return df.set_index('task_id').to_dict('index')
+
+# Load the data once when the module is imported
+TASK_LABOR_DB = load_task_db()
+
+# --- Hardcoded Business Logic (Rates & Multipliers) ---
+
+# These could also be moved to a configuration file in a more complex app
 HOURLY_RATES = {
     "low": 30,
     "medium": 45,
     "high": 60,
 }
 
-# City-based cost multiplier
 CITY_MULTIPLIERS = {
     "Marseille": 1.0,
     "Paris": 1.25,
     "Lyon": 1.1,
 }
 
-def calculate_labor_cost(task_key: str, bathroom_area: float, city: str = "Marseille"):
-    """
-    Calculates the labor cost for a single task.
+# --- Calculation Function ---
 
-    Args:
-        task_key (str): A key like "demolition.remove_tiles".
-        bathroom_area (float): The area of the bathroom in m².
-        city (str): The city where the work is being done.
-
-    Returns:
-        dict: A dictionary with 'time' and 'cost', or None if task not found.
+def calculate_labor_cost(task_id: str, bathroom_area: float, city: str = "Marseille"):
     """
-    category, task_name = task_key.split('.')
-    
-    task_info = TASK_LABOR_DB.get(category, {}).get(task_name)
+    Calculates the labor cost for a single task using the CSV data.
+    """
+    task_info = TASK_LABOR_DB.get(task_id)
     if not task_info:
         return None
 
     # Calculate time
-    base_time = task_info.get("base_time", 0)
-    time_per_sqm = task_info.get("time_per_sqm", 0)
-    total_time = base_time + (time_per_sqm * bathroom_area)
+    total_time = task_info.get("base_time", 0) + (task_info.get("time_per_sqm", 0) * bathroom_area)
 
     # Calculate cost
-    skill_level = task_info.get("skill_level", "medium")
-    hourly_rate = HOURLY_RATES.get(skill_level, 45)
-    
+    hourly_rate = HOURLY_RATES.get(task_info.get("skill_level", "medium"), 45)
     city_multiplier = CITY_MULTIPLIERS.get(city, 1.0)
-    
     total_cost = total_time * hourly_rate * city_multiplier
 
+    # Get the friendly task name from the task_id
+    task_name = task_id.split('.')[-1].replace('_', ' ').title()
+
     return {
-        "task_name": task_name.replace('_', ' ').title(),
+        "task_name": task_name,
         "estimated_time_hours": round(total_time, 2),
         "cost": round(total_cost, 2)
     }
@@ -84,8 +70,4 @@ if __name__ == '__main__':
     # Calculate cost for the same task in Paris
     city_paris = 'Paris'
     tile_removal_cost_paris = calculate_labor_cost('demolition.remove_tiles', area, city_paris)
-    print(f"Cost to remove tiles in a {area}m² bathroom in {city_paris}: {tile_removal_cost_paris}")
-
-    # Calculate cost for a fixed-time task
-    toilet_install_cost = calculate_labor_cost('plumbing.install_toilet', area, city)
-    print(f"Cost to install a toilet in {city}: {toilet_install_cost}") 
+    print(f"Cost to remove tiles in a {area}m² bathroom in {city_paris}: {tile_removal_cost_paris}") 

@@ -1,0 +1,9 @@
+task_id,base_time,time_per_sqm,skill_level
+demolition.remove_tiles,4,1.5,medium
+demolition.remove_toilet,1,0,low
+demolition.remove_vanity,1,0,low
+plumbing.redo_shower_plumbing,8,0,high
+plumbing.install_toilet,3,0,medium
+installation.lay_floor_tiles,4,2,high
+installation.install_vanity,3,0,medium
+finishing.repaint_walls,2,1,low 
