@@ -105,10 +105,9 @@ The pricing is determined by a combination of factors:
     *   The `pricing_logic/material_db.py` module loads and provides access to this data.
 
 3.  **Labor Costs**:
-    *   Labor calculations are handled by `pricing_logic/labor_calc.py`.
-    *   It uses a `TASK_LABOR_DB` to estimate the time required for each task, which can be a combination of a fixed base time and a variable time per square meter.
-    *   Hourly rates are defined based on the skill level required for the task (`low`, `medium`, `high`).
-    *   A city-based multiplier (`CITY_MULTIPLIERS`) adjusts labor costs for different regions (e.g., Paris is more expensive than Marseille).
+    *   Labor cost parameters are now sourced from `data/price_templates.csv`. This file defines the `base_time`, `time_per_sqm`, and `skill_level` for every task.
+    *   The `pricing_logic/labor_calc.py` module uses the `pandas` library to read this CSV and calculate the final labor cost.
+    *   Hourly rates and city-based cost multipliers remain as hardcoded business logic within the `labor_calc.py` module for simplicity.
 
 4.  **Margin**:
     *   A fixed margin (currently 20%) is applied to the subtotal of materials and labor to ensure business profitability.
