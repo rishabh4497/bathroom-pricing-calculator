@@ -1,0 +1,13 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual Environment
+venv/
+
+# Generated output files
+output/
+
+# IDE / Editor specific
+.vscode/
+.idea/ 
