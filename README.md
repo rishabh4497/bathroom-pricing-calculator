@@ -112,14 +112,18 @@ The pricing is determined by a combination of factors:
 4.  **Margin**:
     *   A fixed margin (currently 20%) is applied to the subtotal of materials and labor to ensure business profitability.
 
-5.  **VAT (Value-Added Tax)**:
-    *   VAT rules are defined in `pricing_logic/vat_rules.py`.
-    *   A reduced VAT rate (10%) is applied, as is common for renovation work in many countries.
+5.  **Contingency & Permit Fees**:
+    *   To align with industry best practices, the model now includes a **15% contingency fee**. This fee is applied to the subtotal + margin and acts as a buffer for unforeseen costs.
+    *   A default **€250 permit allowance** is also included to cover the administrative costs of the renovation.
 
-6.  **Confidence Score**:
+6.  **VAT (Value-Added Tax)**:
+    *   VAT rules are defined in `pricing_logic/vat_rules.py`.
+    *   A reduced VAT rate (10%) is applied to the total cost including margin, contingency, and permits.
+
+7.  **Confidence Score**:
     *   A simple confidence score is calculated. It starts at 1.0 and is reduced for each piece of information that could not be successfully parsed from the transcript (e.g., if the bathroom area is not mentioned).
 
-7.  **Feedback Loop (Simulated)**:
+8.  **Feedback Loop (Simulated)**:
     *   The engine includes a simulated feedback mechanism (`apply_feedback` function). This demonstrates how a quote could be adjusted based on external factors, like a competitor's price.
 
 ## Assumptions & Edge Cases

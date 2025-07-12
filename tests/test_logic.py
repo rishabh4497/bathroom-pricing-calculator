@@ -93,16 +93,20 @@ class TestPricingEngine(unittest.TestCase):
         transcript_budget = "A 4m² bathroom. Remove the old tiles. Budget-conscious. Located in Marseille."
         quote_budget = generate_quote(transcript_budget)
         self.assertEqual(quote_budget['client_request_summary']['requested_quality'], 'budget')
-        # Correct calculation: Materials(50) + Labor(450) = 500. Margin(100) + VAT(60) = 160. Total = 660.
-        self.assertAlmostEqual(quote_budget['cost_summary']['final_total_price'], 660.00, places=2)
+        # Calculation: Subtotal(500) + Margin(100) = 600.
+        # Contingency(90) + Permit(250) = 340.
+        # Before VAT = 600 + 340 = 940. VAT(94) = 1034.
+        self.assertAlmostEqual(quote_budget['cost_summary']['final_total_price'], 1034.00, places=2)
         self.assertEqual(quote_budget['metadata']['confidence_score'], 1.0)
         
-        # Premium quote in Paris (should be significantly more expensive)
+        # Premium quote in Paris
         transcript_premium = "A 4m² bathroom. Remove the old tiles. Premium quality. Located in Paris."
         quote_premium = generate_quote(transcript_premium)
         self.assertEqual(quote_premium['client_request_summary']['requested_quality'], 'premium')
-        # Labor(562.5) + Material(50) = 612.5. Margin(122.5) + VAT(73.5) = 196. Total = 808.5
-        self.assertAlmostEqual(quote_premium['cost_summary']['final_total_price'], 808.50, places=2)
+        # Calculation: Subtotal(612.5) + Margin(122.5) = 735.
+        # Contingency(110.25) + Permit(250) = 360.25.
+        # Before VAT = 735 + 360.25 = 1095.25. VAT(109.53) = 1204.78
+        self.assertAlmostEqual(quote_premium['cost_summary']['final_total_price'], 1204.78, places=2)
         
         # Test confidence score
         transcript_errors = "Just a renovation."

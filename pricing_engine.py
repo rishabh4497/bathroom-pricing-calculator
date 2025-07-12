@@ -48,6 +48,10 @@ class CostSummary(BaseModel):
     subtotal: float = 0.0
     margin_applied: str
     margin_amount: float
+    total_before_contingency: float # New field
+    contingency_fee_applied: str
+    contingency_fee_amount: float
+    permit_allowance: float
     total_before_vat: float
     vat_rate_type: str
     vat_rate: float
@@ -212,10 +216,19 @@ def generate_quote(transcript: str) -> dict:
     total_hours = sum(d.labor.estimated_time_hours for d in quote_details)
     subtotal = total_material + total_labor
     
-    # Margin and VAT
+    # Margin
     margin_rate = 0.20
     margin = subtotal * margin_rate
-    total_before_vat = subtotal + margin
+    total_after_margin = subtotal + margin
+
+    # Contingency & Permits
+    contingency_rate = 0.15
+    contingency_fee = total_after_margin * contingency_rate
+    permit_fee = 250.0  # Default permit allowance
+    
+    total_before_vat = total_after_margin + contingency_fee + permit_fee
+    
+    # VAT
     vat_rate = get_vat_rate('reduced')
     vat = total_before_vat * vat_rate
     
@@ -226,6 +239,10 @@ def generate_quote(transcript: str) -> dict:
         subtotal=round(subtotal, 2),
         margin_applied=f"{margin_rate:.0%}",
         margin_amount=round(margin, 2),
+        total_before_contingency=round(total_after_margin, 2),
+        contingency_fee_applied=f"{contingency_rate:.0%}",
+        contingency_fee_amount=round(contingency_fee, 2),
+        permit_allowance=round(permit_fee, 2),
         total_before_vat=round(total_before_vat, 2),
         vat_rate_type='reduced',
         vat_rate=vat_rate,
